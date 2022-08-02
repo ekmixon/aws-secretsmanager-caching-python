@@ -74,7 +74,7 @@ class TestSecretCacheHook(unittest.TestCase):
 
     def test_calls_hook_string(self):
         secret = 'mysecret'
-        hooked_secret = secret + "+hook_put+hook_get"
+        hooked_secret = f"{secret}+hook_put+hook_get"
         response = {}
         versions = {
             '01234567890123456789012345678901': ['AWSCURRENT']
@@ -109,4 +109,4 @@ class TestSecretCacheHook(unittest.TestCase):
                                                                   version_response))
 
         for _ in range(10):
-            self.assertEqual(hooked_secret, cache.get_secret_binary('test')[0:24])
+            self.assertEqual(hooked_secret, cache.get_secret_binary('test')[:24])

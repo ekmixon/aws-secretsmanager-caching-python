@@ -44,7 +44,9 @@ class SecretCache:
         if self._client is None:
             self._client = botocore.session.get_session().create_client("secretsmanager")
 
-        self._client.meta.config.user_agent_extra = "AwsSecretCache/{}".format(SecretCache.__version__)
+        self._client.meta.config.user_agent_extra = (
+            f"AwsSecretCache/{SecretCache.__version__}"
+        )
 
     def _get_cached_secret(self, secret_id):
         """Get a cached secret for the given secret identifier.
@@ -76,9 +78,7 @@ class SecretCache:
         :return: The associated secret string value
         """
         secret = self._get_cached_secret(secret_id).get_secret_value(version_stage)
-        if secret is None:
-            return secret
-        return secret.get("SecretString")
+        return secret if secret is None else secret.get("SecretString")
 
     def get_secret_binary(self, secret_id, version_stage=None):
         """Get the secret binary value from the cache.
@@ -93,6 +93,4 @@ class SecretCache:
         :return: The associated secret binary value
         """
         secret = self._get_cached_secret(secret_id).get_secret_value(version_stage)
-        if secret is None:
-            return secret
-        return secret.get("SecretBinary")
+        return secret if secret is None else secret.get("SecretBinary")

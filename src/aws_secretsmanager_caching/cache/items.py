@@ -188,9 +188,7 @@ class SecretCacheItem(SecretCacheObject):
         if "VersionIdsToStages" not in result:
             return None
         ids = [key for (key, value) in result["VersionIdsToStages"].items() if version_stage in value]
-        if not ids:
-            return None
-        return ids[0]
+        return ids[0] if ids else None
 
     def _execute_refresh(self):
         """Perform the actual refresh of the cached secret information.
@@ -215,8 +213,7 @@ class SecretCacheItem(SecretCacheObject):
         version_id = self._get_version_id(self._get_result(), version_stage)
         if not version_id:
             return None
-        version = self._versions.get(version_id)
-        if version:
+        if version := self._versions.get(version_id):
             return version.get_secret_value()
         self._versions.put_if_absent(version_id, SecretCacheVersion(self._config, self._client, self._secret_id,
                                                                     version_id))

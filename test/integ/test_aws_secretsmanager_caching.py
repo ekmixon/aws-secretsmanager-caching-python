@@ -47,10 +47,16 @@ class TestAwsSecretsManagerCachingInteg:
         try:
             for page in iterator:
                 logger.info('Fetching results from ListSecretValue...')
-                for secret in page['SecretList']:
-                    if secret['Name'].startswith(TestAwsSecretsManagerCachingInteg.fixture_prefix) and \
-                            (secret['LastChangedDate'] > two_days_ago) and (secret['LastAccessedDate'] > two_days_ago):
-                        old_secrets.append(secret)
+                old_secrets.extend(
+                    secret
+                    for secret in page['SecretList']
+                    if secret['Name'].startswith(
+                        TestAwsSecretsManagerCachingInteg.fixture_prefix
+                    )
+                    and (secret['LastChangedDate'] > two_days_ago)
+                    and (secret['LastAccessedDate'] > two_days_ago)
+                )
+
                 try:
                     paginator_config['StartingToken'] = page['NextToken']
                 except KeyError:
@@ -65,11 +71,11 @@ class TestAwsSecretsManagerCachingInteg:
             logger.fatal("Got NoCredentialsError while calling ListSecrets.")
             raise
 
-        if len(old_secrets) == 0:
+        if not old_secrets:
             logger.info("No previously configured test secrets found")
 
         for secret in old_secrets:
-            logger.info("Scheduling deletion of secret {}".format(secret['Name']))
+            logger.info(f"Scheduling deletion of secret {secret['Name']}")
             try:
                 client.delete_secret(SecretId=secret['Name'])
             except ClientError as e:

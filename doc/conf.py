@@ -29,7 +29,7 @@ templates_path = ['_templates']
 source_suffix = '.rst'  # The suffix of source filenames.
 master_doc = 'index'  # The master toctree document.
 
-copyright = u'%s, Amazon.com' % datetime.now().year
+copyright = f'{datetime.now().year}, Amazon.com'
 
 # The full version, including alpha/beta/rc tags.
 release = version
@@ -46,7 +46,7 @@ autodoc_member_order = 'bysource'
 
 html_theme = 'haiku'
 html_static_path = ['_static']
-htmlhelp_basename = '%sdoc' % project
+htmlhelp_basename = f'{project}doc'
 
 # autosummary
 autosummary_generate = True

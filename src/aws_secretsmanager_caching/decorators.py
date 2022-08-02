@@ -87,7 +87,7 @@ class InjectKeywordedSecretString:
         except json.decoder.JSONDecodeError:
             raise RuntimeError('Cached secret is not valid JSON') from None
 
-        resolved_kwargs = dict()
+        resolved_kwargs = {}
         for orig_kwarg in self.kwarg_map:
             secret_key = self.kwarg_map[orig_kwarg]
             try:
